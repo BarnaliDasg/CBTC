@@ -18,18 +18,11 @@
             </li>
 
             <!-- Add Post Icon -->
-             <!-- Button to Open the Modal -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-                Open Modal
-            </button>
-            <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            Launch demo modal
-            </button> -->
-            <!-- <li class="nav-item mx-2">
-                <a class="nav-link" href="#" id="Modal" data-bs-toggle="modal" data-bs-target="#addpost" aria-label="addpost">
+            <li class="nav-item mx-2">
+                <a class="nav-link" href="#" id="Modal" data-toggle="modal" data-target="#exampleModal" aria-label="addpost">
                     <i class="fas fa-plus-square fa-lg"></i>
                 </a>
-            </li> -->
+            </li>
 
             <!-- Notifications -->
             <li class="nav-item mx-2">
@@ -54,15 +47,15 @@
 
             <!-- User Dropdown -->
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <img src="assets/images/profile/<?=$user['profile_pic']?>" alt="Profile" height="40" width="40" class="rounded-circle border">
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="?edit_profile">Edit Profile</a></li>
-                    <li><a class="dropdown-item" href="#">Account Settings</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="assets/php/actions.php?logout">Logout</a></li>
-                </ul>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="?edit_profile">Edit Profile</a>
+                    <a class="dropdown-item" href="#">Account Settings</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="assets/php/actions.php?logout">Logout</a>
+                </div>
             </li>
         </ul>
     </div>

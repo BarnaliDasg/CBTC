@@ -9,6 +9,14 @@ function showPage($page, $data = "") {
     include("assets/pages/$page.php");
 }
 
+//function for follow the user
+function followUser($u_id){
+    global $db;
+    $current_user=$_SESSION['userdata']['id'];
+    $query="INSERT INTO follow_list(follower_id,u_id) VALUES($current_user,$u_id)";
+    return  mysqli_query($db, $query);
+}
+
 // Function for showing errors
 function showError($field) {
     if (isset($_SESSION['error'])) {
@@ -193,6 +201,17 @@ function getUser($user_id) {
 
     return mysqli_fetch_assoc($run);
 }
+
+//for getting user data by uname
+function getUserbyName($uname) {
+    global $db;
+
+    $query = "SELECT * FROM user WHERE uname = '$uname'";
+    $run = mysqli_query($db, $query);
+
+    return mysqli_fetch_assoc($run);
+}
+
 //verify email
 function verifyEmail($email) {
     global $db; 
@@ -204,6 +223,7 @@ function verifyEmail($email) {
     $stmt->bind_param("s", $email); 
     return $stmt->execute();
 }
+
 // Resend verification code
 function resendCode($email) {
     // Generate a new verification code
@@ -323,6 +343,139 @@ function updateProfile($data, $imagedata = null) {
         error_log(mysqli_error($db));
         return ['status' => false, 'msg' => 'Database update failed.'];
     }
+}
+
+//validating addpost
+function validatePostImage($image_data) {
+    $response = array();
+    $response['status'] = true;
+
+    if(!$image_data['name']){
+        $response['msg']="No image is selected";
+        $response['status']=false;
+        $response['field']='post_img';
+    }
+
+    if($image_data['name']){
+        $image=basename($image_data['name']);
+        $type=strtolower(pathinfo($image,PATHINFO_EXTENSION));
+        $size=$image_data['size']/1000;
+
+        if ($type!='jpg' && $type!='jpeg' && $type!='png') {
+            $response['msg'] = "only jpg/jpeg/png images allowed";
+            $response['status'] = false;
+            $response['field'] = 'post_img';
+        }
+
+        if($size>1000){
+            $response['msg'] = "upload image less tham 1MB";
+            $response['status'] = false;
+            $response['field'] = 'post_img';
+        }
+    }
+
+    return $response;
+}
+
+// Function for creating a new Post
+function createPost($text, $image) {
+    global $db;
+    $u_id = $_SESSION['userdata']['id'];
+
+    // Check if 'post_text' exists, otherwise set it to an empty string
+    $post_text = isset($text['post_text']) ? mysqli_real_escape_string($db, $text['post_text']) : '';
+
+    // Check if an image is uploaded
+    if (!isset($image['tmp_name']) || empty($image['tmp_name'])) {
+        return false; // No image uploaded, returning false
+    }
+
+    // Secure and store the image
+    $image_name = basename($image['name']);
+    $image_dir = "../images/posts/$image_name";
+
+    if (move_uploaded_file($image['tmp_name'], $image_dir)) {
+        // Insert into database with an empty post_text if the user left it blank
+        $query = "INSERT INTO posts (u_id, post_txt, post_img) VALUES ('$u_id', '$post_text', '$image_name')";
+        return mysqli_query($db, $query) ?: false; // Return false on query failure
+    }
+
+    return false; // Image upload failed
+}
+
+//for getting post
+
+function getPost() {
+    global $db;
+
+    $query = "SELECT posts.id,posts.u_id,posts.post_img,posts.post_txt,posts.created_at,user.fname,user.lname,user.uname,user.profile_pic FROM posts JOIN user ON user.id =posts.u_id ORDER BY id DESC";
+
+    $run = mysqli_query($db, $query);
+
+    return mysqli_fetch_all($run,true);
+}
+//getting post dynamically
+function filterpost() {
+    $list = getPost();
+    $filter_list = array();
+
+    if (!isset($_SESSION['userdata']['id'])) {
+        return $filter_list; // Prevents undefined index error
+    }
+
+    foreach ($list as $post) {
+        if (checkFollowStatus($post['u_id']) || $post['u_id'] == $_SESSION['userdata']['id']) {
+            $filter_list[] = $post;
+        }
+    }
+    return $filter_list;
+}
+
+
+//for filtering suggestions
+function filterFollowSuggestions(){
+    $list=getFollowSuggestions();
+    $filter_list=array();
+
+    foreach($list as $user){
+        if(!checkFollowStatus($user['id'])){
+            $filter_list[]=$user;
+        }
+    }
+    return $filter_list;
+}
+
+//for checking the user is follwed by current user
+function checkFollowStatus($u_id){
+    global $db;
+
+    $current_user=$_SESSION['userdata']['id'];
+    $query="SELECT count(*) as row FROM  follow_list WHERE follower_id=$current_user && u_id=$u_id";
+    
+    $run = mysqli_query($db, $query);
+    return mysqli_fetch_assoc($run)['row'];
+}
+
+//for getting users foe follow suggestions
+function getFollowSuggestions(){
+    global $db;
+    $current_user=$_SESSION['userdata']['id'];
+
+    $query="SELECT * from user WHERE id!=$current_user";
+
+    $run = mysqli_query($db, $query);
+    return mysqli_fetch_all($run,true);
+}
+
+//for getting post by id
+function getPostbyId($u_id) {
+    global $db;
+
+    $query = "SELECT * from posts WHERE u_id=$u_id ORDER BY id DESC";
+
+    $run = mysqli_query($db, $query);
+
+    return mysqli_fetch_all($run,true);
 }
 
 ?>
