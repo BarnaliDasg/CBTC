@@ -41,6 +41,28 @@ $(".followbtn").click(function () {
     });
 });
 
+//for unfollow the user
+$(".unfollowbtn").click(function () {
+    var u_id_v = $(this).data("user-id");
+    var button = $(this);
+    $(button).attr('disabled',true);
+
+    $.ajax({
+        url: "assets/php/ajax.php?unfollow",
+        method: "POST",
+        dataType: "json",
+        data: { u_id: u_id_v },
+        success: function (response) {
+            if (response.status) {
+                button.html('<i class="fas fa-check-circle text-white"></i> Unfollowed');
+                button.removeClass("btn-primary").addClass("bg-danger text-white px-3 py-1 rounded border-0");
+            }else{
+                $(button).attr('disabled',false);
+                alert('something is wrong, try again after sometime');
+            }
+        }
+    });
+});
 
 
 

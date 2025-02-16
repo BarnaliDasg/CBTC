@@ -5,14 +5,14 @@
             <h3>Create New Account</h3>
         </div>
 
-    <div class="d-flex gap-2 mt-1">
-        <div class="form-floating flex-fill">
+    <div class="d-flex gap-2 mt-1" >
+        <div class="form-floating flex-fill" style="width: 45%;">
             <input type="text" name="fname" class="form-control rounded-0" id="fname" placeholder="First Name" value="<?= showFormData('fname') ?>">
             <label for="fname" class="form-label">First Name</label>
             <?= showError('fname') ?>
         </div>
-
-        <div class="form-floating flex-fill">
+        <div style="width: 10%;"></div>
+        <div class="form-floating flex-fill" style="width: 45%;">
             <input type="text" name="lname" class="form-control rounded-0" id="lname" placeholder="Last Name" value="<?= showFormData('lname') ?>">
             <label for="lname" class="form-label">Last Name</label>
             <?= showError('lname') ?>

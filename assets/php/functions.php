@@ -17,6 +17,14 @@ function followUser($u_id){
     return  mysqli_query($db, $query);
 }
 
+//function for follow the user
+function unfollowUser($u_id){
+    global $db;
+    $current_user=$_SESSION['userdata']['id'];
+    $query="DELETE FROM follow_list WHERE follower_id=$current_user && u_id=$u_id";
+    return  mysqli_query($db, $query);
+}
+
 // Function for showing errors
 function showError($field) {
     if (isset($_SESSION['error'])) {
@@ -438,7 +446,7 @@ function filterFollowSuggestions(){
     $filter_list=array();
 
     foreach($list as $user){
-        if(!checkFollowStatus($user['id'])){
+        if(!checkFollowStatus($user['id']) && count($filter_list)<5){
             $filter_list[]=$user;
         }
     }
@@ -466,6 +474,27 @@ function getFollowSuggestions(){
     $run = mysqli_query($db, $query);
     return mysqli_fetch_all($run,true);
 }
+
+//get followers count
+function getfollowers($u_id){
+    global $db;
+
+    $query="SELECT * from follow_list WHERE u_id=$u_id";
+
+    $run = mysqli_query($db, $query);
+    return mysqli_fetch_all($run,true);
+}
+
+//get followers count
+function getfollowing($u_id){
+    global $db;
+
+    $query="SELECT * from follow_list WHERE follower_id=$u_id";
+
+    $run = mysqli_query($db, $query);
+    return mysqli_fetch_all($run,true);
+}
+
 
 //for getting post by id
 function getPostbyId($u_id) {
