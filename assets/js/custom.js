@@ -64,6 +64,58 @@ $(".unfollowbtn").click(function () {
     });
 });
 
+//for like the post
+$(".like_btn").click(function () {
+    var post_id_v = $(this).data("postId");
+    var button = $(this);
+
+    $(button).prop("disabled", true);
+
+    $.ajax({
+        url: "assets/php/ajax.php?like",
+        method: "POST",
+        dataType: "json",
+        data: { post_id: post_id_v },
+        success: function (response) {
+            console.log(response);
+
+            if (response.status) {
+                $(button).attr("disabled", false);
+                $(button).attr('class',"fa fa-heart unlike_btn");
+            } else {
+                $(button).attr("disabled", false);
+                alert("Something went wrong, please try again later.");
+            }
+        }
+    });
+});
+
+// Handle Unlike Button Click
+$(".unlike_btn").click(function () {
+    var post_id_v = $(this).data("postId");
+    var button = $(this);
+
+    $(button).prop("disabled", true);
+
+    $.ajax({
+        url: "assets/php/ajax.php?unlike",
+        method: "POST",
+        dataType: "json",
+        data: { post_id: post_id_v },
+        success: function (response) {
+            console.log(response);
+
+            if (response.status) {
+                $(button).attr("disabled", false);
+                $(button).attr('class',"far fa-heart like_btn");
+            } else {
+                $(button).attr("disabled", false);
+                alert("Something went wrong, please try again later.");
+            }
+        }
+    });
+});
+
 
 
 

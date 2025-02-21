@@ -16,6 +16,32 @@ function followUser($u_id){
     $query="INSERT INTO follow_list(follower_id,u_id) VALUES($current_user,$u_id)";
     return  mysqli_query($db, $query);
 }
+//function checklike status
+function checklikeStatus($post_id){
+    global $db;
+
+    $current_user=$_SESSION['userdata']['id'];
+    $query="SELECT count(*) as row FROM  likes WHERE u_id=$current_user && post_id=$post_id";
+    
+    $run = mysqli_query($db, $query);
+    return mysqli_fetch_assoc($run)['row'];
+}
+
+//function for like
+function like($post_id){
+    global $db;
+    $current_user=$_SESSION['userdata']['id'];
+    $query="INSERT INTO likes(post_id,u_id) VALUES($post_id,$current_user)";
+    return  mysqli_query($db, $query);
+}
+
+//function for unlike
+function unlike($post_id){
+    global $db;
+    $current_user=$_SESSION['userdata']['id'];
+    $query="DELETE FROM likes WHERE u_id=$current_user && post_id=$post_id";
+    return  mysqli_query($db, $query);
+}
 
 //function for follow the user
 function unfollowUser($u_id){

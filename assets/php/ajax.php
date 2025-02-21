@@ -33,4 +33,29 @@ if(isset($_GET['unfollow'])){
 
     echo json_encode($response);
 }
+
+//like
+if(isset($_GET['like'])){
+    $post_id = $_POST['post_id'];
+
+    if(!checklikeStatus($post_id)){
+        if(like($post_id)){
+            $response['status'] = true;
+        }
+    }
+    echo json_encode($response);
+}
+
+//unlike
+if(isset($_GET['unlike'])){
+    $post_id = $_POST['post_id'];
+
+    if(checklikeStatus($post_id)){
+        if(unlike($post_id)){
+            $response['status'] = true;
+        }
+    }
+    echo json_encode($response);
+}
+
 ?>
