@@ -96,7 +96,7 @@
                     echo "<p class='p-2 bg-white border rounded text-center'> No suggestions for you <p>";
                 }
                 ?>
-
+                
             </div>
         </div>
     </div>

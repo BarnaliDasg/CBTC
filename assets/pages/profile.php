@@ -33,9 +33,9 @@ global $user;
                 <div class="d-flex gap-2 align-items-center my-3">
                     <a class="btn btn-sm btn-primary"><i class="fas fa-file-alt"></i> <?=count($profile_post)?> posts</a>
                     <div style="width:10px"></div>
-                    <a class="btn btn-sm btn-primary"><i class="fas fa-users"></i> <?=count($profile['followers'])?> followers</a>
+                    <a class="btn btn-sm btn-primary"data-toggle='modal' data-target="#followerlist"><i class="fas fa-users"></i> <?=count($profile['followers'])?> followers</a>
                     <div style="width:10px"></div>
-                    <a class="btn btn-sm btn-primary"><i class="fas fa-user"></i> <?=count($profile['following'])?> following</a>
+                    <a class="btn btn-sm btn-primary"data-toggle='modal' data-target="#followings"><i class="fas fa-user"></i> <?=count($profile['following'])?> following</a>
                 </div>
 
                 <?php if ($user['id'] != $profile['id']) { ?>
@@ -71,3 +71,101 @@ global $user;
         display: none !important;
     }
 </style>
+
+<!-- this is for follower list -->
+<div class="modal fade" id="followerlist" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Followers</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <!-- Fixed for Bootstrap 4 -->
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <?php
+                foreach($profile['followers'] as $f){
+                    $fuser = getUser($f['follower_id']);
+                    $fbtn = "";
+                    
+                    if (checkFollowStatus($f['follower_id'])) {
+                        $fbtn = '<button class="btn btn-sm btn-danger unfollowbtn" data-user-id="' . $fuser['id'] . '">Unfollow</button>';
+                    } else if($user['id']==$f['follower_id']){
+                        $fbtn = '';
+                    }else {
+                        $fbtn = '<button class="btn btn-sm btn-primary followbtn" data-user-id="' . $fuser['id'] . '">Follow</button>';
+                    }                    
+                ?>
+                    <div class="d-flex justify-content-between">
+                    <div class="d-flex align-items-center p-2">
+                        <div><img src="assets/images/profile/<?=$fuser['profile_pic']?>" alt="" height="40" width="40" class="rounded-circle border">
+                        </div>
+                        <div>&nbsp;&nbsp;</div>
+                        <a href="?u=<?=$fuser['uname']?>" class="text-decoration-none text-dark">
+                        <div class="d-flex flex-column justify-content-center">
+                            <h6 style="margin: 0px;font-size: small;"><?=$fuser['fname']?> <?=$fuser['lname']?></h6>
+                            <p style="margin:0px;font-size:small" class="text-muted">@<?=$fuser['uname']?></p>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <?=$fbtn?>
+
+                    </div>
+                </div>
+                <?php
+                }
+                ?>
+            </div>
+        </div>
+  </div>
+</div>
+
+<!-- this is for following list -->
+<div class="modal fade" id="followings" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Followings</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <!-- Fixed for Bootstrap 4 -->
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <?php
+                foreach($profile['following'] as $f){
+                    $fuser = getUser($f['u_id']);
+                    $fbtn = "";
+                    
+                    if (checkFollowStatus($f['u_id'])) {
+                        $fbtn = '<button class="btn btn-sm btn-danger unfollowbtn" data-user-id="' . $fuser['id'] . '">Unfollow</button>';
+                    } else if($user['id']==$f['u_id']){
+                        $fbtn = '';
+                    }else {
+                        $fbtn = '<button class="btn btn-sm btn-primary followbtn" data-user-id="' . $fuser['id'] . '">Follow</button>';
+                    }                    
+                ?>
+                    <div class="d-flex justify-content-between">
+                    <div class="d-flex align-items-center p-2">
+                        <div><img src="assets/images/profile/<?=$fuser['profile_pic']?>" alt="" height="40" width="40" class="rounded-circle border">
+                        </div>
+                        <div>&nbsp;&nbsp;</div>
+                        <a href="?u=<?=$fuser['uname']?>" class="text-decoration-none text-dark">
+                        <div class="d-flex flex-column justify-content-center">
+                            <h6 style="margin: 0px;font-size: small;"><?=$fuser['fname']?> <?=$fuser['lname']?></h6>
+                            <p style="margin:0px;font-size:small" class="text-muted">@<?=$fuser['uname']?></p>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <?=$fbtn?>
+
+                    </div>
+                </div>
+                <?php
+                }
+                ?>
+            </div>
+        </div>
+  </div>
+</div>
