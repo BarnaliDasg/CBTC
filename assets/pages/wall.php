@@ -13,6 +13,7 @@
                     echo "<p class='p-2 bg-white border rounded text-center my-3'>Follow someone or add a new post<p>";
                 }
             foreach ($posts as $post){
+                $likes=getLikes($post['id'])
             ?>
             <div class="card mt-4">
                 <div class="card-title d-flex justify-content-between  align-items-center">
@@ -26,20 +27,23 @@
                 </div>
                 <img src="assets/images/posts/<?=$post['post_img']?>" class="" alt="...">
                 <h4 style="font-size: x-larger" class="p-2 border-bottom">
+                <span>
                 <?php
                     if(checklikeStatus($post['id'])){
-                ?>
-                    <i class="fa fa-heart unlike_btn" data-post-id="<?=$post['id']?>"></i>
-                <?php
+                        $like_btn_display='none';
+                        $unlike_btn_display='';
                     }else{
-                ?>
-                    <i class="far fa-heart like_btn" data-post-id="<?=$post['id']?>"></i>
-                <?php
+                        $unlike_btn_display='none';
+                        $like_btn_display='';
                     }
                 ?>
-                &nbsp;&nbsp;<i
-                        class="bi bi-chat-left"></i>
+                <i class="fa fa-heart unlike_btn" style="display:<?=$unlike_btn_display?>" data-post-id="<?=$post['id']?>"></i>
+                <i class="far fa-heart like_btn" style="display:<?=$like_btn_display?>" data-post-id="<?=$post['id']?>"></i>
+                </span>
+                &nbsp;&nbsp;<i class="far fa-comment"></i><br>
                 </h4>
+
+                <a href="#" data-toggle="modal" data-target="#likes<?=$post['id']?>" class="p-1 mx-2" style="text-decoration: none; color: inherit;"><?=count($likes)?> likes</a>
 
                 <?php 
                     if($post['post_txt']){
@@ -60,6 +64,58 @@
                         id="button-addon2">Post</button>
                 </div>
 
+                <div class="modal fade" id="likes<?=$post['id']?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Likes</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <!-- Fixed for Bootstrap 4 -->
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <?php
+                                    if(count($likes)<1){
+                                    ?>
+                                        <p>No likes yet</p>
+                                    <?php
+                                    }
+                                    foreach($likes as $f){
+                                        $fuser = getUser($f['u_id']);
+                                        $fbtn = "";
+                                        
+                                        if (checkFollowStatus($f['u_id'])) {
+                                            $fbtn = '<button class="btn btn-sm btn-danger unfollowbtn" data-user-id="' . $fuser['id'] . '">Unfollow</button>';
+                                        } else if($user['id']==$f['u_id']){
+                                            $fbtn = '';
+                                        }else {
+                                            $fbtn = '<button class="btn btn-sm btn-primary followbtn" data-user-id="' . $fuser['id'] . '">Follow</button>';
+                                        }                    
+                                    ?>
+                                        <div class="d-flex justify-content-between">
+                                        <div class="d-flex align-items-center p-2">
+                                            <div><img src="assets/images/profile/<?=$fuser['profile_pic']?>" alt="" height="40" width="40" class="rounded-circle border">
+                                            </div>
+                                            <div>&nbsp;&nbsp;</div>
+                                            <a href="?u=<?=$fuser['uname']?>" class="text-decoration-none text-dark">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 style="margin: 0px;font-size: small;"><?=$fuser['fname']?> <?=$fuser['lname']?></h6>
+                                                <p style="margin:0px;font-size:small" class="text-muted">@<?=$fuser['uname']?></p>
+                                            </div>
+                                            </a>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <?=$fbtn?>
+
+                                        </div>
+                                    </div>
+                                    <?php
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                    </div>
+                </div>
             </div>
             <?php
             }

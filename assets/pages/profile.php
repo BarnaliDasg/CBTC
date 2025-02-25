@@ -60,8 +60,69 @@ global $user;
     <div class="gallery d-flex flex-wrap gap-2 mb-4">
         <?php
             foreach ($profile_post as $post) { ?>
-            <img style="padding: 2px;" src="assets/images/posts/<?=$post['post_img']?>" width="30%" class="rounded" />
-        <?php } ?>
+            <img style="padding: 2px;" src="assets/images/posts/<?=$post['post_img']?>" data-toggle="modal" data-target="#postview<?=$post['id']?>" width="30%" class="rounded" />
+            <!-- this is for showing post -->
+            <!-- Modal -->
+            <div class="modal fade" id="postview<?=$post['id']?>" tabindex="-1" role="dialog" aria-labelledby="postModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content border-0 rounded-lg">
+                        <div class="modal-body p-0">
+                            <div class="row no-gutters">
+                                
+                                <!-- Left Side: Post Image -->
+                                <div class="col-md-6">
+                                    <img src="assets/images/posts/<?=$post['post_img']?>" class="img-fluid rounded-left w-100" alt="Post Image">
+                                </div>
+
+                                <!-- Right Side: Comments Section -->
+                                <div class="col-md-6 d-flex flex-column">
+                                    
+                                    <!-- User Info -->
+                                    <div class="p-3 border-bottom d-flex align-items-center">
+                                        <img src="assets/images/profile/<?=$profile['profile_pic']?>" class="rounded-circle mr-2" width="35" height="35" alt="User">
+                                        <div>
+                                            <span class="text-secondary" style="font-size: larger;"><?= $profile['fname'] ?> <?= $profile['lname'] ?></span><br>
+                                            <span class="text-secondary">@<?= $profile['uname'] ?></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Comments Section -->
+                                    <div class="p-3 border-bottom">
+                                        <h5 class="mb-0">Comments</h5>
+                                    </div>
+
+                                    <div class="comments-section flex-grow-1 p-3" style="overflow-y: auto; max-height: 400px;">
+                                        <?php foreach ($comments as $comment): ?>
+                                            <div class="d-flex align-items-start mb-3">
+                                                <img src="assets/images/profile/<?= $comment['profile_pic'] ?>" class="rounded-circle mr-2" width="35" height="35" alt="<?= $comment['username'] ?>">
+                                                <div class="comment-box bg-light p-2 rounded">
+                                                    <strong><?= $comment['username'] ?></strong> <br>
+                                                    <?= htmlspecialchars($comment['content']) ?>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+
+                                    <!-- Add Comment Box -->
+                                    <div class="p-3 border-top">
+                                        <div class="d-flex align-items-center">
+                                            <input type="text" class="form-control rounded-pill" id="commentInput<?=$post['id']?>" placeholder="Add a comment...">
+                                            <button class="btn btn-primary btn-sm ml-2 rounded-pill" id="<?=$post['id']?>">Post</button>
+                                        </div>
+                                    </div>
+
+                                </div> <!-- End Right Side -->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        
+            <?php } ?>
+
+
     </div>
 </div>
 
@@ -169,3 +230,5 @@ global $user;
         </div>
   </div>
 </div>
+
+

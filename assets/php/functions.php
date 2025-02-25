@@ -43,6 +43,14 @@ function unlike($post_id){
     return  mysqli_query($db, $query);
 }
 
+//function for getting like counts
+function getLikes($post_id){
+    global $db;
+    $query="SELECT * FROM  likes WHERE post_id=$post_id";
+    $run = mysqli_query($db, $query);
+    return mysqli_fetch_all($run,true);
+}
+
 //function for follow the user
 function unfollowUser($u_id){
     global $db;
